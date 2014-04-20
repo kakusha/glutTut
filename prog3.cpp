@@ -61,26 +61,10 @@ GLfloat light1pos[] = { 5.0, 3.0, 0.0, 1.0 };
 
 GLfloat green[] = { 0.0, 1.0, 0.0, 1.0 };
 GLfloat red[] = {0.8, 0.2, 0.2, 1.0 };
+GLfloat blue[] = { 0.2, 0.2, 0.8, 1.0 };
 
-
-void idle(void) {
-	glutPostRedisplay();
-}
-
-void display(void)
-{
-  int i, j;
-  static int r = 0;
-
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  glLoadIdentity();
-
-  gluLookAt(3.0, 4.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-  glRotated((double)r, 0.0, 1.0, 0.0);
-
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, red);
+void cube(void) {
+  int i,j;
 
   glBegin(GL_QUADS);
   for (j = 0; j < (sizeof(face) / sizeof(face[4])); ++j) {
@@ -91,6 +75,38 @@ void display(void)
     }
   }
   glEnd();
+}
+
+
+void idle(void) {
+	glutPostRedisplay();
+}
+
+void display(void)
+{
+  static int r = 0;
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glLightfv(GL_LIGHT0, GL_POSITION, light0pos);
+  glLightfv(GL_LIGHT1, GL_POSITION, light1pos);
+
+  glPushMatrix();
+
+  glRotated((double)r, 0.0, 1.0, 0.0);
+
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, red);
+
+  cube();
+
+  glPushMatrix();
+  glTranslated(1.0, 1.0, 1.0);
+  glRotated((double)(2 * r), 0.0, 1.0, 0.0);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, blue);
+  cube();
+  glPopMatrix();
+
+  glPopMatrix();
 
   glutSwapBuffers();
 
@@ -109,6 +125,8 @@ void resize(int w, int h)
   //glTranslated(0.0, 0.0, -5.0);
   //gluLookAt(3.0, 4.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  gluLookAt(3.0, 4.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 void mouse(int button, int state, int x, int y) {
